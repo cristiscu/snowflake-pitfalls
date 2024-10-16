@@ -29,16 +29,16 @@ limit 10;
 -- TABLE wrapper
 
 select seq1()
-from generator(rowcount => 10)
-limit 10;
+from generator(rowcount => 10);
 
 select seq1()
-from table(generator(rowcount => 10))
-limit 10;
+from table(generator(rowcount => 10));
 
 select *
-from table(result_scan(last_query_id()))
-limit 10;
+from result_scan(last_query_id());
+
+select *
+from table(result_scan(last_query_id(-2)));
 
 -- ================================================
 -- TABLE vs LATERAL
@@ -50,7 +50,3 @@ from (select parse_json('[1, 2, 3]') j) arr,
 select elem.value
 from (select parse_json('[1, 2, 3]') j) arr,
     lateral flatten(arr.j) elem;
-
-select elem.value
-from (select parse_json('[1, 2, 3]') j) arr
-    inner join lateral flatten(arr.j) elem;

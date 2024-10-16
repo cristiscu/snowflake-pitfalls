@@ -1,5 +1,3 @@
--- FLATTEN: https://docs.snowflake.com/en/sql-reference/functions/flatten
-
 -- flattening arrays
 select t.arr, elem.value, elem.index
 from (select ['a', 'b', 'c'] arr) t,
