@@ -57,18 +57,6 @@ create or replace function f4()
 as $$ select 0 $$;
 
 -- =======================================================
--- returns: mismatch between declared return signature column count (0) and actual column count (2)
--- should rather be: required column names and types in the returned TABLE type
-create or replace function f5()
-    returns table()
-as $$ select 0, 'a' $$;
-
--- possible fix
-create or replace function f5()
-    returns table(col1 int, col2 string)
-as $$ select 0, 'a' $$;
-
--- =======================================================
 -- returns: syntax error: unexpected 'rs'. syntax error ... unexpected ':='
 -- should rather be: required variable data type
 create or replace procedure p6()

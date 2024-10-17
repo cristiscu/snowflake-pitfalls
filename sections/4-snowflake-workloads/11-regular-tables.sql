@@ -9,7 +9,7 @@ create or replace table proj (
     end_date    date        NULL);
 
 -- this will fail (no indexes allowed on regular tables)
-create or replace index projh_dates (start_date, end_date) on proj;
+create or replace index proj_dates (start_date, end_date) on proj;
 
 insert into proj values
     (1,    'Cleanup Data',          '1980-12-05',   '1981-01-09'    ),

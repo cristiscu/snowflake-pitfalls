@@ -1,49 +1,51 @@
-use test.employees;
+use test.public;
 
-select * from dept;
+create or replace table tt(name string) as select 'John Doe';
+select * from tt;
+table tt;
+SET qid = last_query_id();
 
--- replace string value below w/ your own Query ID of the previous query
-select * from dept
-before (statement => '01b47a41-0002-6f96-0061-80070001c182');
+-- =========================================
+-- check data from the past
 
-select * from dept
-at (offset => -1000);
+table tt before (statement => $qid);
 
-select * from dept
-at (timestamp => dateadd(hour, -2, current_timestamp()));
+table tt at (offset => -1000);
 
-select * from dept
-before (timestamp => current_timestamp() - interval '2 hours');
+table tt at (timestamp => dateadd(hour, -2, current_timestamp()));
 
-select * from dept
-before (timestamp => current_timestamp() - interval '10 days');
+table tt before (timestamp => current_timestamp() - interval '2 hours');
 
-show tables like 'dept';
+table tt before (timestamp => current_timestamp() - interval '10 days');
+
+-- =========================================
+-- check/change retention interval
+
+show tables like 'tt';
 
 -- also for account/database/schema
-show parameters like 'data_retention_time_in_days' for table dept;
+show parameters like 'data_retention_time_in_days' for table tt;
 
-alter table dept set data_retention_time_in_days = 3;
+alter table tt set data_retention_time_in_days = 3;
 
--- drop and recover table
-drop table dept;
+-- =========================================
+-- drop/recover table
 
-select * from dept;
+drop table tt;
+table tt;
 
-undrop table dept;
+undrop table tt;
+table tt;
 
-select * from dept;
+-- =========================================
+-- recover table with past data, with content
+create or replace table tt2 as
+table tt before (timestamp => current_timestamp() - interval '2 hours');
+table tt2;
 
--- recover table, with content
-create or replace table dept2 as
-select * from dept
-before (timestamp => current_timestamp() - interval '2 hours');
-
-select * from dept2;
-
-drop table dept;
-alter table dept2 rename to dept;
-select * from dept;
+drop table tt;
+alter table tt2 rename to tt;
+table tt;
 
 -- check changes, including for dropped & recovered tables
-show tables HISTORY like 'dept%';
+show tables HISTORY like 'tt%';
