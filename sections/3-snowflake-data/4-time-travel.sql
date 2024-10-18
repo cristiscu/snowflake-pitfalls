@@ -9,14 +9,17 @@ SET qid = last_query_id();
 -- check data from the past
 
 table tt before (statement => $qid);
-
 table tt at (offset => -1000);
-
 table tt at (timestamp => dateadd(hour, -2, current_timestamp()));
-
 table tt before (timestamp => current_timestamp() - interval '2 hours');
-
 table tt before (timestamp => current_timestamp() - interval '10 days');
+
+-- =========================================
+-- change data & look prior this change
+
+update tt set name = 'Jim Maier' where name = 'John Doe';
+table tt;
+table tt at (offset => -60);
 
 -- =========================================
 -- check/change retention interval
@@ -24,9 +27,9 @@ table tt before (timestamp => current_timestamp() - interval '10 days');
 show tables like 'tt';
 
 -- also for account/database/schema
-show parameters like 'data_retention_time_in_days' for table tt;
+show parameters like 'DATA_RETENTION_TIME_IN_DAYS' for table tt;
 
-alter table tt set data_retention_time_in_days = 3;
+alter table tt set DATA_RETENTION_TIME_IN_DAYS = 3;
 
 -- =========================================
 -- drop/recover table
@@ -47,5 +50,6 @@ drop table tt;
 alter table tt2 rename to tt;
 table tt;
 
+-- =========================================
 -- check changes, including for dropped & recovered tables
 show tables HISTORY like 'tt%';
