@@ -29,22 +29,21 @@ $$;
 INSERT INTO cdc1_source
     VALUES (False, 1, 'John'), (False, 2, 'Mary'), (False, 3, 'George');
 CALL cdc1_merge();
-SELECT * FROM cdc1_target;
 TRUNCATE TABLE cdc1_source;
+SELECT * FROM cdc1_target;
 
 -- UPDATE + DELETE
 INSERT INTO cdc1_source
     VALUES (False, 1, 'Mark'), (True, 2, NULL);
 CALL cdc1_merge();
-SELECT * FROM cdc1_target;
 TRUNCATE TABLE cdc1_source;
+SELECT * FROM cdc1_target;
 
 -- =============================================
 -- (2) w/ CHANGE_TRACKING + SELECT CHANGES(...)
 
 CREATE OR REPLACE TABLE cdc2_source(id INT, name STRING);
 ALTER TABLE cdc2_source SET CHANGE_TRACKING = TRUE;
-CREATE OR REPLACE TABLE cdc3_target(id int, name string);
 
 -- set initial point in time
 SET ts1 = (SELECT CURRENT_TIMESTAMP());

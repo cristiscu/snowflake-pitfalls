@@ -14,9 +14,10 @@ end;
 
 call procSql(22.5);
 select * from table(result_scan(last_query_id()));
+select procSql(22.5);
 
 create or replace procedure procSqlT(s string)
-    returns table(out varchar)
+    returns table()
 as
 begin
     LET rs RESULTSET := (select :s union all select :s);
@@ -56,7 +57,6 @@ as $$
 $$;
 
 call procJs(22.5);
-select * from table(result_scan(last_query_id()));
 
 -- JavaScript UDF
 create or replace function funcJs(num float)
